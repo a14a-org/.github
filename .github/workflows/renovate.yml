@@ -10,11 +10,6 @@ on:
         type: choice
         default: "info"
         options: [debug, info, warn, error]
-      dryRun:
-        description: "Dry run mode"
-        type: choice
-        default: "disabled"
-        options: [disabled, lookup, full]
 
 permissions:
   contents: read
@@ -45,4 +40,3 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
-          RENOVATE_DRY_RUN: ${{ inputs.dryRun == 'disabled' && '' || inputs.dryRun }}
