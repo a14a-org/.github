@@ -1,0 +1,48 @@
+name: Renovate
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        type: choice
+        default: "info"
+        options: [debug, info, warn, error]
+      dryRun:
+        description: "Dry run mode"
+        type: choice
+        default: "disabled"
+        options: [disabled, lookup, full]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: renovate
+  cancel-in-progress: false
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mint GitHub App installation token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@v40
+        with:
+          configurationFile: config.js
+          token: ${{ steps.app-token.outputs.token }}
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
+          RENOVATE_DRY_RUN: ${{ inputs.dryRun == 'disabled' && '' || inputs.dryRun }}
