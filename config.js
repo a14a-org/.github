@@ -1,7 +1,6 @@
 module.exports = {
   platform: "github",
   autodiscover: true,
-  autodiscoverFilter: ["a14a-org/cantrip"],
   onboarding: true,
   onboardingConfigFileName: ".github/renovate.json",
   onboardingConfig: {
