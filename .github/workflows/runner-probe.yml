@@ -1,0 +1,30 @@
+name: Self-hosted runner probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: self-hosted
+    steps:
+      - name: System info
+        run: |
+          echo "=== OS ===" && uname -a
+          echo "=== whoami ===" && whoami
+          echo "=== disk ===" && df -h | head -5
+
+      - name: Tooling versions
+        continue-on-error: true
+        run: |
+          echo "=== node ===" && (node --version || echo "MISSING")
+          echo "=== npm ===" && (npm --version || echo "MISSING")
+          echo "=== bun ===" && (bun --version || echo "MISSING")
+          echo "=== docker ===" && (docker --version || echo "MISSING")
+          echo "=== gh ===" && (gh --version | head -1 || echo "MISSING")
+          echo "=== git ===" && (git --version || echo "MISSING")
+          echo "=== python3 ===" && (python3 --version || echo "MISSING")
+          echo "=== curl ===" && (curl --version | head -1 || echo "MISSING")
+          echo "=== jq ===" && (jq --version || echo "MISSING")
