@@ -4,7 +4,7 @@
   "timezone": "Europe/Amsterdam",
   "labels": ["dependencies", "renovate"],
   "semanticCommits": "disabled",
-  "commitMessagePrefix": "deps:",
+  "commitMessagePrefix": "chore(deps):",
   "commitMessageAction": "bump",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "from {{currentVersion}} to {{newVersion}}",
@@ -33,6 +33,18 @@
       "matchManagers": ["github-actions"],
       "groupName": "github-actions",
       "automerge": true
+    },
+    {
+      "description": "Isolate next-auth beta — requires manual review",
+      "matchPackageNames": ["next-auth", "@auth/core"],
+      "groupName": "next-auth",
+      "automerge": false
+    },
+    {
+      "description": "Isolate toolchain deps — linter/formatter upgrades need human review",
+      "matchPackageNames": ["@biomejs/biome", "typescript", "playwright", "lefthook"],
+      "groupName": "toolchain",
+      "automerge": false
     }
   ],
   "vulnerabilityAlerts": {
