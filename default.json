@@ -29,8 +29,9 @@
       "addLabels": ["major-update"]
     },
     {
-      "description": "Group and auto-merge GitHub Actions updates",
+      "description": "Group and auto-merge non-major GitHub Actions updates (majors fall through to the major rule above)",
       "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
       "groupName": "github-actions",
       "automerge": true
     },
