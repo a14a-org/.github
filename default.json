@@ -48,6 +48,16 @@
       "automerge": false
     }
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Keep biome.json $schema version in lockstep with @biomejs/biome so Biome never rejects its own config",
+      "managerFilePatterns": ["/(^|/)biome\\.jsonc?$/"],
+      "matchStrings": ["https://biomejs\\.dev/schemas/(?<currentValue>[^/]+?)/schema\\.json"],
+      "depNameTemplate": "@biomejs/biome",
+      "datasourceTemplate": "npm"
+    }
+  ],
   "vulnerabilityAlerts": {
     "enabled": true,
     "labels": ["security"],
