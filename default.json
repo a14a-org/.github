@@ -54,7 +54,7 @@
       "automerge": true
     },
     {
-      "description": "Isolate next-auth beta \u2014 requires manual review",
+      "description": "Isolate next-auth beta — requires manual review",
       "matchPackageNames": [
         "next-auth",
         "@auth/core"
@@ -63,7 +63,7 @@
       "automerge": false
     },
     {
-      "description": "Isolate toolchain deps \u2014 linter/formatter upgrades need human review",
+      "description": "Isolate toolchain deps — linter/formatter upgrades need human review",
       "matchPackageNames": [
         "@biomejs/biome",
         "typescript",
@@ -74,7 +74,7 @@
       "automerge": false
     },
     {
-      "description": "Postgres majors are data migrations (pg_upgrade + verified backups), not dependency bumps \u2014 RED tier, manual runbook only",
+      "description": "Postgres majors are data migrations (pg_upgrade + verified backups), not dependency bumps — RED tier, manual runbook only",
       "matchDatasources": [
         "docker"
       ],
@@ -83,6 +83,26 @@
         "library/postgres"
       ],
       "allowedVersions": "<18"
+    },
+    {
+      "description": "GREEN-tier: auto-merge @types/* major bumps — type definitions only, build-time, zero runtime risk (CI gates)",
+      "matchPackageNames": [
+        "@types/**"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "GREEN-tier: auto-merge GitHub Actions major bumps — CI-only change, no app runtime impact (CI gates)",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": true
     }
   ],
   "customManagers": [
