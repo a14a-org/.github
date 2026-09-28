@@ -103,6 +103,50 @@
         "major"
       ],
       "automerge": true
+    },
+    {
+      "description": "HOLD TypeScript 7 in repos linting with typescript-eslint / eslint-config-next: typescript-eslint (8.70.1) peers typescript <6.1.0 and cannot load TS7 (no JS API). Biome repos are unaffected. Lift once typescript-eslint supports TypeScript 7.",
+      "matchRepositories": [
+        "a14a-org/aircoland-chat",
+        "a14a-org/chili-chat",
+        "a14a-org/chilitrack",
+        "a14a-org/chipts",
+        "a14a-org/cjp-app-demo",
+        "a14a-org/cjp-deck",
+        "a14a-org/cjp-quiz-deck",
+        "a14a-org/cjpnl-v2",
+        "a14a-org/coinmerce-all-hands-presentation",
+        "a14a-org/datagigant-suite",
+        "a14a-org/design-tool-app",
+        "a14a-org/domeinenlijst-suite",
+        "a14a-org/forager-app",
+        "a14a-org/grs-chat",
+        "a14a-org/n8n-nodes-twinfield",
+        "a14a-org/omnidoku",
+        "a14a-org/omnirun"
+      ],
+      "matchPackageNames": [
+        "typescript"
+      ],
+      "allowedVersions": "<7"
+    },
+    {
+      "description": "HOLD ESLint 10: eslint-plugin-react 7.37.x (also pulled in by eslint-config-next) peers eslint <=9.7 and crashes on 10 (getFilename removed). Lift once it supports ESLint 10.",
+      "matchPackageNames": [
+        "eslint"
+      ],
+      "allowedVersions": "<10"
+    },
+    {
+      "description": "Vite and @vitejs/plugin-react majors must move together (plugin peers the matching Vite major); one PR instead of two that each fail alone.",
+      "matchPackageNames": [
+        "vite",
+        "@vitejs/plugin-react"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "vite"
     }
   ],
   "customManagers": [
