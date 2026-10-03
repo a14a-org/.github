@@ -53,4 +53,5 @@ jobs:
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
           RENOVATE_DRY_RUN: ${{ inputs.dryRun != 'live' && inputs.dryRun || '' }}
-          RENOVATE_AUTODISCOVER_FILTER: ${{ inputs.autodiscoverFilter || '' }}
+          # Staged rollout: the repo variable limits scheduled runs to a pilot set; delete it to cover the whole org.
+          RENOVATE_AUTODISCOVER_FILTER: ${{ inputs.autodiscoverFilter || vars.RENOVATE_AUTODISCOVER_FILTER || '' }}
