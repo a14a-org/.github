@@ -4,6 +4,14 @@
     "config:recommended"
   ],
   "timezone": "Europe/Amsterdam",
+  "schedule": [
+    "after 10pm on saturday",
+    "before 6am on sunday"
+  ],
+  "automergeSchedule": [
+    "after 10pm on saturday",
+    "before 6am on sunday"
+  ],
   "labels": [
     "dependencies",
     "renovate"
@@ -13,8 +21,8 @@
   "commitMessageAction": "bump",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "from {{currentVersion}} to {{newVersion}}",
-  "prHourlyLimit": 4,
-  "prConcurrentLimit": 10,
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 5,
   "rangeStrategy": "bump",
   "minimumReleaseAge": "3 days",
   "platformAutomerge": true,
@@ -31,14 +39,15 @@
       "groupSlug": "minor-and-patch"
     },
     {
-      "description": "Major updates open a PR but require manual review",
+      "description": "Major updates wait for approval on the Dependency Dashboard, then open a PR that needs manual review",
       "matchUpdateTypes": [
         "major"
       ],
       "automerge": false,
       "addLabels": [
         "major-update"
-      ]
+      ],
+      "dependencyDashboardApproval": true
     },
     {
       "description": "Group and auto-merge non-major GitHub Actions updates (majors fall through to the major rule above)",
@@ -54,7 +63,7 @@
       "automerge": true
     },
     {
-      "description": "Isolate next-auth beta — requires manual review",
+      "description": "Isolate next-auth beta \u2014 requires manual review",
       "matchPackageNames": [
         "next-auth",
         "@auth/core"
@@ -63,7 +72,7 @@
       "automerge": false
     },
     {
-      "description": "Isolate toolchain deps — linter/formatter upgrades need human review",
+      "description": "Isolate toolchain deps \u2014 linter/formatter upgrades need human review",
       "matchPackageNames": [
         "@biomejs/biome",
         "typescript",
@@ -74,7 +83,7 @@
       "automerge": false
     },
     {
-      "description": "Postgres majors are data migrations (pg_upgrade + verified backups), not dependency bumps — RED tier, manual runbook only",
+      "description": "Postgres majors are data migrations (pg_upgrade + verified backups), not dependency bumps \u2014 RED tier, manual runbook only",
       "matchDatasources": [
         "docker"
       ],
@@ -85,24 +94,26 @@
       "allowedVersions": "<18"
     },
     {
-      "description": "GREEN-tier: auto-merge @types/* major bumps — type definitions only, build-time, zero runtime risk (CI gates)",
+      "description": "GREEN-tier: auto-merge @types/* major bumps \u2014 type definitions only, build-time, zero runtime risk (CI gates)",
       "matchPackageNames": [
         "@types/**"
       ],
       "matchUpdateTypes": [
         "major"
       ],
-      "automerge": true
+      "automerge": true,
+      "dependencyDashboardApproval": false
     },
     {
-      "description": "GREEN-tier: auto-merge GitHub Actions major bumps — CI-only change, no app runtime impact (CI gates)",
+      "description": "GREEN-tier: auto-merge GitHub Actions major bumps \u2014 CI-only change, no app runtime impact (CI gates)",
       "matchManagers": [
         "github-actions"
       ],
       "matchUpdateTypes": [
         "major"
       ],
-      "automerge": true
+      "automerge": true,
+      "dependencyDashboardApproval": false
     },
     {
       "description": "HOLD TypeScript 7 in repos linting with typescript-eslint / eslint-config-next: typescript-eslint (8.70.1) peers typescript <6.1.0 and cannot load TS7 (no JS API). Biome repos are unaffected. Lift once typescript-eslint supports TypeScript 7.",
@@ -147,6 +158,26 @@
         "major"
       ],
       "groupName": "vite"
+    },
+    {
+      "description": "Repos whose branch protection requires an up-to-date branch: auto-merge stalls unless Renovate rebases branches that fall behind, so these keep behind-base-branch. Everywhere else rebaseWhen=conflicted avoids re-running CI on every open Renovate branch after each merge.",
+      "matchRepositories": [
+        "a14a-org/chilitrack",
+        "a14a-org/cjp-deck",
+        "a14a-org/mlxstudio",
+        "a14a-org/omnirun-sdk-python",
+        "a14a-org/mkb-ai-suite",
+        "a14a-org/lora-tune-mlx",
+        "a14a-org/learning-platform",
+        "a14a-org/langchain-omnirun",
+        "a14a-org/llama-index-tools-omnirun",
+        "a14a-org/chilidesk",
+        "a14a-org/omnirun-claude-managed-agents-worker",
+        "a14a-org/chilicms",
+        "a14a-org/datagigant-suite",
+        "a14a-org/chili-contracts"
+      ],
+      "rebaseWhen": "behind-base-branch"
     }
   ],
   "customManagers": [
@@ -173,8 +204,10 @@
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": [
-      "before 6am on monday"
+      "after 10pm on saturday",
+      "before 6am on sunday"
     ],
     "automerge": true
-  }
+  },
+  "rebaseWhen": "conflicted"
 }

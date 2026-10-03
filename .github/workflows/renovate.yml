@@ -2,7 +2,10 @@ name: Renovate
 
 on:
   schedule:
-    - cron: "0 */4 * * *"
+    # Daily at 21:00 UTC (22:00/23:00 Amsterdam). The preset only lets Renovate open,
+    # rebase and auto-merge PRs in the Saturday-night window, so weekday runs just
+    # refresh the Dependency Dashboard and handle security alerts.
+    - cron: "0 21 * * *"
   workflow_dispatch:
     inputs:
       logLevel:
@@ -10,6 +13,15 @@ on:
         type: choice
         default: "info"
         options: [debug, info, warn, error]
+      dryRun:
+        description: "Renovate dryRun mode"
+        type: choice
+        default: live
+        options: [live, extract, lookup, full]
+      autodiscoverFilter:
+        description: "Limit to repos, e.g. a14a-org/{repo-a,repo-b} (empty = all)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -40,3 +52,5 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
+          RENOVATE_DRY_RUN: ${{ inputs.dryRun != 'live' && inputs.dryRun || '' }}
+          RENOVATE_AUTODISCOVER_FILTER: ${{ inputs.autodiscoverFilter || '' }}
