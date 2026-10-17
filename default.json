@@ -23,9 +23,10 @@
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "from {{currentVersion}} to {{newVersion}}",
   "prHourlyLimit": 2,
-  "prConcurrentLimit": 5,
+  "prConcurrentLimit": 10,
   "rangeStrategy": "bump",
   "minimumReleaseAge": "3 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "platformAutomerge": true,
   "automergeStrategy": "squash",
   "packageRules": [
@@ -64,7 +65,7 @@
       "automerge": true
     },
     {
-      "description": "Isolate next-auth beta \u2014 requires manual review",
+      "description": "Isolate next-auth beta — requires manual review",
       "matchPackageNames": [
         "next-auth",
         "@auth/core"
@@ -73,18 +74,20 @@
       "automerge": false
     },
     {
-      "description": "Isolate toolchain deps \u2014 linter/formatter upgrades need human review",
+      "description": "Isolate toolchain deps (linter/formatter/test runner) for human review. playwright, playwright-core and @playwright/test move together so the CLI-installed browsers always match the runtime package (viberr nightly broke on a 1.61/1.63 split).",
       "matchPackageNames": [
         "@biomejs/biome",
         "typescript",
         "playwright",
+        "playwright-core",
+        "@playwright/test",
         "lefthook"
       ],
       "groupName": "toolchain",
       "automerge": false
     },
     {
-      "description": "Postgres majors are data migrations (pg_upgrade + verified backups), not dependency bumps \u2014 RED tier, manual runbook only",
+      "description": "Postgres majors are data migrations (pg_upgrade + verified backups), not dependency bumps — RED tier, manual runbook only",
       "matchDatasources": [
         "docker"
       ],
@@ -95,7 +98,7 @@
       "allowedVersions": "<18"
     },
     {
-      "description": "GREEN-tier: auto-merge @types/* major bumps \u2014 type definitions only, build-time, zero runtime risk (CI gates)",
+      "description": "GREEN-tier: auto-merge @types/* major bumps — type definitions only, build-time, zero runtime risk (CI gates)",
       "matchPackageNames": [
         "@types/**"
       ],
@@ -106,7 +109,7 @@
       "dependencyDashboardApproval": false
     },
     {
-      "description": "GREEN-tier: auto-merge GitHub Actions major bumps \u2014 CI-only change, no app runtime impact (CI gates)",
+      "description": "GREEN-tier: auto-merge GitHub Actions major bumps — CI-only change, no app runtime impact (CI gates)",
       "matchManagers": [
         "github-actions"
       ],
@@ -127,6 +130,7 @@
         "a14a-org/cjp-deck",
         "a14a-org/cjp-quiz-deck",
         "a14a-org/cjpnl-v2",
+        "a14a-org/claudebox",
         "a14a-org/coinmerce-all-hands-presentation",
         "a14a-org/datagigant-suite",
         "a14a-org/design-tool-app",
@@ -179,6 +183,91 @@
         "a14a-org/chili-contracts"
       ],
       "rebaseWhen": "behind-base-branch"
+    },
+    {
+      "description": "Updates without a release timestamp (lock file maintenance, Docker digests, replacements) can never satisfy minimumReleaseAge; without this the renovate/stability-days status stays pending forever",
+      "matchUpdateTypes": [
+        "lockFileMaintenance",
+        "digest",
+        "pinDigest",
+        "replacement"
+      ],
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "Never cross a major on override/resolution selectors: they are security pins that apply to every transitive consumer",
+      "matchDepTypes": [
+        "overrides",
+        "pnpm.overrides",
+        "resolutions"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Capacitor majors must move together (peer ranges); one PR instead of several that each fail alone",
+      "matchPackageNames": [
+        "@capacitor/**"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "capacitor"
+    },
+    {
+      "description": "Runtime versions (Node, Bun) move together and by hand: CI, Dockerfile and nixpacks pins must stay aligned with what production runs",
+      "matchDepNames": [
+        "node",
+        "bun",
+        "oven/bun",
+        "library/node"
+      ],
+      "groupName": "runtime",
+      "automerge": false
+    },
+    {
+      "description": "Own production apps without a Coolify health check: a merge that builds but crashes at runtime becomes an outage, so no unattended merges until health checks are enabled",
+      "matchRepositories": [
+        "a14a-org/albion-market-tool",
+        "a14a-org/chipts",
+        "a14a-org/claudebox",
+        "a14a-org/claudeskill-manager",
+        "a14a-org/commandr",
+        "a14a-org/creds-oracle",
+        "a14a-org/dnb-suite",
+        "a14a-org/domain-oracle",
+        "a14a-org/fleet-oracle",
+        "a14a-org/github-runner-image",
+        "a14a-org/lemon-chat",
+        "a14a-org/nepaligo",
+        "a14a-org/next-lm-chat",
+        "a14a-org/omnidoku",
+        "a14a-org/portfolio-landings",
+        "a14a-org/unicornstudio"
+      ],
+      "automerge": false,
+      "addLabels": [
+        "no-healthcheck"
+      ]
+    },
+    {
+      "description": "Default off: automerge only in the a14a-owned repos named here (own production apps and internal tools). Every other repo, including any repo added later, needs a human merge. Keep this rule LAST: it only ever sets automerge false, so the major, next-auth, toolchain, runtime and no-healthcheck rules above still hold",
+      "matchRepositories": [
+        "!/^a14a-org\\/(102projects|a14a-landing|a14a-os|a14a-platform-poc|albion-market-tool|axinite|betaaldbereik|bun-api-template|cantrip|ccj-web|chili-app|chili-chat|chili-contracts|chili-design-system|chilicms|chilicomply|chilicrm|chilidesk|chilitrack|chipts|claude-temper|claudebox|claudecode-skill-manager-site|claudeskill-manager|client-brandkits|combin3-app|commandr|create-chili-app|creds-oracle|design-tool-app|dnb-suite|dns-flat|domain-oracle|eu-ai-act-test|fleet-oracle|fread|kid-story-book|kvk-tracker|langchain-omnirun|learning-platform|ledgersoft|lemon-chat|llama-index-tools-omnirun|lora-tune-mlx|mkb-ai-suite|mlxgpt|mlxstudio|munchwave-app|nepaligo|next-lm-chat|next-template|omnidoku|omnirun|omnirun-claude-managed-agents-worker|omnirun-cli|omnirun-cloud|omnirun-examples|omnirun-next|omnirun-sdk|omnirun-sdk-python|parametric-closet-designer|portfolio-landings|project-emergent|robo-challenge|scalarops-ai|scalarops-web|sigil-logomaker|tenantshield|time-tracker|unicornstudio|viberr|zynosure-design-system|zynosure-marketing|zynosure-suite)$/"
+      ],
+      "automerge": false
+    },
+    {
+      "description": "Same default-off rule, stated for the lockFileMaintenance update type explicitly",
+      "matchRepositories": [
+        "!/^a14a-org\\/(102projects|a14a-landing|a14a-os|a14a-platform-poc|albion-market-tool|axinite|betaaldbereik|bun-api-template|cantrip|ccj-web|chili-app|chili-chat|chili-contracts|chili-design-system|chilicms|chilicomply|chilicrm|chilidesk|chilitrack|chipts|claude-temper|claudebox|claudecode-skill-manager-site|claudeskill-manager|client-brandkits|combin3-app|commandr|create-chili-app|creds-oracle|design-tool-app|dnb-suite|dns-flat|domain-oracle|eu-ai-act-test|fleet-oracle|fread|kid-story-book|kvk-tracker|langchain-omnirun|learning-platform|ledgersoft|lemon-chat|llama-index-tools-omnirun|lora-tune-mlx|mkb-ai-suite|mlxgpt|mlxstudio|munchwave-app|nepaligo|next-lm-chat|next-template|omnidoku|omnirun|omnirun-claude-managed-agents-worker|omnirun-cli|omnirun-cloud|omnirun-examples|omnirun-next|omnirun-sdk|omnirun-sdk-python|parametric-closet-designer|portfolio-landings|project-emergent|robo-challenge|scalarops-ai|scalarops-web|sigil-logomaker|tenantshield|time-tracker|unicornstudio|viberr|zynosure-design-system|zynosure-marketing|zynosure-suite)$/"
+      ],
+      "matchUpdateTypes": [
+        "lockFileMaintenance"
+      ],
+      "automerge": false
     }
   ],
   "customManagers": [
@@ -200,15 +289,18 @@
     "labels": [
       "security"
     ],
-    "automerge": true
+    "automerge": false
   },
   "lockFileMaintenance": {
-    "enabled": true,
+    "enabled": false,
     "schedule": [
       "after 10pm on saturday",
       "before 6am on sunday"
     ],
-    "automerge": true
+    "automerge": true,
+    "commitMessageAction": "refresh",
+    "commitMessageTopic": "lock file",
+    "commitMessageExtra": ""
   },
   "rebaseWhen": "conflicted"
 }
