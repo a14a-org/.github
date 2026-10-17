@@ -1,7 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "helpers:pinGitHubActionDigestsToSemver"
   ],
   "timezone": "Europe/Amsterdam",
   "schedule": [
@@ -59,7 +60,8 @@
       "matchUpdateTypes": [
         "minor",
         "patch",
-        "digest"
+        "digest",
+        "pinDigest"
       ],
       "groupName": "github-actions",
       "automerge": true
@@ -109,9 +111,13 @@
       "dependencyDashboardApproval": false
     },
     {
-      "description": "GREEN-tier: auto-merge GitHub Actions major bumps — CI-only change, no app runtime impact (CI gates)",
+      "description": "GREEN-tier: auto-merge GitHub Actions major bumps from GitHub's own publishers (actions/*, github/*) only — CI-only change, no app runtime impact (CI gates). Third-party action majors need a human merge",
       "matchManagers": [
         "github-actions"
+      ],
+      "matchPackageNames": [
+        "actions/**",
+        "github/**"
       ],
       "matchUpdateTypes": [
         "major"
