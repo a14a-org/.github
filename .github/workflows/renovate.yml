@@ -56,7 +56,9 @@ jobs:
           configurationFile: config.js
           token: ${{ steps.app-token.outputs.token }}
         env:
-          LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
+          # Scheduled runs log at warn: this repository is public and info-level logs list
+          # every repository processed. Manual runs keep the logLevel input (default info).
+          LOG_LEVEL: ${{ inputs.logLevel || 'warn' }}
           RENOVATE_DRY_RUN: ${{ inputs.dryRun != 'live' && inputs.dryRun || '' }}
           # Staged rollout: the repo variable limits scheduled runs to a pilot set; delete it to cover the whole org.
           RENOVATE_AUTODISCOVER_FILTER: ${{ inputs.autodiscoverFilter || vars.RENOVATE_AUTODISCOVER_FILTER || '' }}
