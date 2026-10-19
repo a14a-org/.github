@@ -234,6 +234,45 @@
       "automerge": false
     },
     {
+      "description": "CI node/bun pins in these repos match the pinned nixpkgs snapshot their Nixpacks production build uses (7a0f122f: node 24.20.0, bun 1.4.2). Renovate must not move them alone; bump them together with nixpkgsArchive by hand",
+      "matchRepositories": [
+        "a14a-org/102projects",
+        "a14a-org/a14a-landing",
+        "a14a-org/a14a-os",
+        "a14a-org/axinite",
+        "a14a-org/betaaldbereik",
+        "a14a-org/ccj-web",
+        "a14a-org/claudecode-skill-manager-site",
+        "a14a-org/clawfolio",
+        "a14a-org/commandr",
+        "a14a-org/creds-oracle",
+        "a14a-org/dns-flat",
+        "a14a-org/domain-oracle",
+        "a14a-org/eu-ai-act-test",
+        "a14a-org/fleet-oracle",
+        "a14a-org/kid-story-book",
+        "a14a-org/ledgersoft",
+        "a14a-org/lemon-chat",
+        "a14a-org/munchwave-app",
+        "a14a-org/nepaligo",
+        "a14a-org/omnirun-next",
+        "a14a-org/parametric-closet-designer",
+        "a14a-org/project-emergent",
+        "a14a-org/scalarops-web",
+        "a14a-org/sigil-logomaker",
+        "a14a-org/tenantshield",
+        "a14a-org/time-tracker"
+      ],
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchDepNames": [
+        "node",
+        "bun"
+      ],
+      "enabled": false
+    },
+    {
       "description": "Own production apps without a Coolify health check: a merge that builds but crashes at runtime becomes an outage, so no unattended merges until health checks are enabled",
       "matchRepositories": [
         "a14a-org/albion-market-tool",
