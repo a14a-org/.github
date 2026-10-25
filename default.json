@@ -234,20 +234,6 @@
       "automerge": false
     },
     {
-      "description": "CI node/bun pins in these repos match the pinned nixpkgs snapshot their Nixpacks production build uses (7a0f122f: node 24.20.0, bun 1.4.2). Renovate must not move them alone; bump them together with nixpkgsArchive by hand. The other repos moved to Railpack on 2026-10-24 (railpack.json + .nvmrc pin the production runtime), so their CI pins are free to move again.",
-      "matchRepositories": [
-        "a14a-org/nepaligo"
-      ],
-      "matchManagers": [
-        "github-actions"
-      ],
-      "matchDepNames": [
-        "node",
-        "bun"
-      ],
-      "enabled": false
-    },
-    {
       "description": "Own production apps without a Coolify health check: a merge that builds but crashes at runtime becomes an outage, so no unattended merges until health checks are enabled",
       "matchRepositories": [
         "a14a-org/albion-market-tool",
