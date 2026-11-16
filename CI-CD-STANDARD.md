@@ -99,6 +99,14 @@ Scheduled workflows that fail repeatedly are either repaired or disabled.
 - Deploy and release jobs use a GitHub environment restricted to the default
   branch.
 
+## 9. README
+
+Every repository has a `README.md` at its root that follows
+[`README-TEMPLATE.md`](README-TEMPLATE.md): what the project is, its status
+and owner, how to run it locally, its environment variables, the checks CI
+runs, and how it deploys. Framework-generated boilerplate does not count. The
+commands in the README match the repo's package manager and scripts.
+
 ## Local hooks
 
 Lefthook runs lint and type check on commit and tests on push. Commit
